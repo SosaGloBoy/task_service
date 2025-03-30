@@ -41,7 +41,7 @@ func InitDB(cfg Config) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	if err := db.AutoMigrate(&model.Task{}); err != nil {
+	if err := db.AutoMigrate(&model.Task{}, &model.Step{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
 
