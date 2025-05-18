@@ -20,6 +20,7 @@ func NewTaskRepository(db *gorm.DB, logger *slog.Logger) interfaces.TaskInterfac
 // CreateTask создаёт задание в базе данных
 func (r *TaskRepository) CreateTask(ctx context.Context, task *model.Task) error {
 	r.Logger.InfoContext(ctx, "Creating task", "task", task.Title)
+
 	if err := r.DB.Create(task).Error; err != nil {
 		r.Logger.ErrorContext(ctx, "Failed to create task", "error", err)
 		return err
@@ -32,7 +33,7 @@ func (r *TaskRepository) CreateTask(ctx context.Context, task *model.Task) error
 func (r *TaskRepository) GetTaskByID(ctx context.Context, id uint) (*model.Task, error) {
 	r.Logger.InfoContext(ctx, "Fetching task by ID", "id", id)
 	var task model.Task
-	if err := r.DB.First(&task, id).Error; err != nil {
+	if err := r.DB.Preload("Steps").First(&task, id).Error; err != nil {
 		r.Logger.ErrorContext(ctx, "Failed to find task by ID", "id", id, "error", err)
 		return nil, err
 	}
